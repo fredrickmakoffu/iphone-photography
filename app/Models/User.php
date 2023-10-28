@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Achievement;
+use App\Models\Comment;
+use App\Models\Lesson;
+use App\Models\Badge;
 
 class User extends Authenticatable
 {
@@ -72,6 +75,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Achievement::class, 'user_achievements', 'user_id', 'achievement_id')
             ->withPivot('achieved_at'); // Include the pivot table's "achieved_at" column, if applicable
+    }
+
+    public function badge()
+    {
+        return $this->belongsTo(Badge::class);
     }
 }
 

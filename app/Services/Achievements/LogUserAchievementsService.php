@@ -5,9 +5,8 @@ namespace App\Services\Achievements;
 use App\Models\User;
 use App\Models\Achievement;
 use App\Models\UserAchievement;
-use Illuminate\Support\Facades\Log;
 
-class UpdateUserAchievementsService
+class LogUserAchievementsService
 {
     private Achievement $achievement;
     private UserAchievement $user_achievement;
@@ -45,17 +44,20 @@ class UpdateUserAchievementsService
     protected function setAchievement(Achievement $achievement) : object
     {   
         try{
-            return $this->user_achievement = $this->user_achievement->create([
+            $this->user_achievement = $this->user_achievement->create([
                 'user_id' => $this->user->id,
                 'achievement_id' => $achievement->id,
             ]);
         } catch (\Exception $e) {
-            Log::info($e->getMessage());
-
             return (object) [
                 'success' => false,
                 'message' => $e->getMessage(),
             ];
         }
+
+        return (object) [
+            'success' => true,
+            'message' => 'Achievement set successfully',
+        ];
     }
 }
