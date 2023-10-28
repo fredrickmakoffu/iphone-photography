@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_achievements', function (Blueprint $table) {
             $table->id();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('achievement_id')->references('id')->on('achievements');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('achievement_id')->constrained('achievements');
             $table->timestamps();
         });
     }

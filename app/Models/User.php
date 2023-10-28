@@ -67,5 +67,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Lesson::class)->wherePivot('watched', true);
     }
+
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements', 'user_id', 'achievement_id')
+            ->withPivot('achieved_at'); // Include the pivot table's "achieved_at" column, if applicable
+    }
 }
 

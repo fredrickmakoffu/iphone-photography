@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreign('badge_id')->references('id')->on('badges');
+            $table->foreignId('badge_id')->nullable()->constrained('badges');
         });
     }
 
