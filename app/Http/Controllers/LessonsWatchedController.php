@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Lesson\StoreRequest;
-use App\Services\Achievements\LogUserAchievementsService;
-use App\Services\Badges\SetUserBadgeService;
 use Illuminate\Http\JsonResponse;
 use App\Models\LessonsWatched;
+use App\Events\AchievementUnlocked;
+use App\Events\BadgeUnlocked;
 
 class LessonsWatchedController extends Controller
 {
@@ -18,18 +18,18 @@ class LessonsWatchedController extends Controller
         $this->lessonsWatched = new LessonsWatched();
     }
 
-    public function store(StoreRequest $request, LogUserAchievementsService $logAchievement, SetUserBadgeService $setBadge): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
         // create comment
-        $comment = $this->lessonsWatched->create($request->validated());
+        $lesson = $this->lessonsWatched->create($request->validated());
 
-        // create achievements if any 
-        $logAchievement->execute(self::ACHIEVEMENT_TYPE);
+        // dispatch AchievementUnlocked event
+        AchievementUnlocked::dispatch($request->user(), self::ACHIEVEMENT_TYPE);
 
         // set badge if any
-        $setBadge->execute();
+        BadgeUnlocked::dispatch($request->user());
 
         // return response
-        return response()->json($comment, 201);
+        return response()->json($lesson, 201);
     }
 }

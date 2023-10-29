@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\AchievementUnlocked;
+use App\Events\BadgeUnlocked;
+use App\Listeners\LogUserAchievementListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
+use App\Listeners\SetUserBadgeListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +21,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        AchievementUnlocked::class => [
+            LogUserAchievementListener::class
+        ],
+        BadgeUnlocked::class => [
+            SetUserBadgeListener::class
+        ]
     ];
 
     /**

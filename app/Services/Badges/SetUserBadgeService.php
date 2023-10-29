@@ -4,7 +4,6 @@ namespace App\Services\Badges;
 
 use App\Models\Badge;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SetUserBadgeService
@@ -35,7 +34,8 @@ class SetUserBadgeService
         $user_achievements = $this->user->achievements()->count();
 
         // get badge from user achievements
-        return $this->badge->orderByRaw("abs(points - $user_achievements)")
+        return $this->badge
+            ->where('points', $user_achievements)
             ->latest()
             ->first();
     }
