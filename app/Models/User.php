@@ -73,8 +73,7 @@ class User extends Authenticatable
 
     public function achievements()
     {
-        return $this->belongsToMany(Achievement::class, 'user_achievements', 'user_id', 'achievement_id')
-            ->withPivot('achieved_at'); // Include the pivot table's "achieved_at" column, if applicable
+        return $this->belongsToMany(Achievement::class, 'user_achievements', 'user_id', 'achievement_id');
     }
 
     public function badge()
@@ -82,4 +81,3 @@ class User extends Authenticatable
         return $this->belongsTo(Badge::class);
     }
 }
-
