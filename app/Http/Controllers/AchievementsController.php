@@ -3,18 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Traits\Achievements\GetUserAchievementsData;
+use App\Traits\Badges\GetUserBadgesData;
 
 class AchievementsController extends Controller
 {
-    public function index(User $user)
+    use GetUserAchievementsData, GetUserBadgesData;
+
+    public function index(User $user): JsonResponse
     {
+        $next_badge = $this->getNextBadge($user);
+
         return response()->json([
-            'unlocked_achievements' => [],
-            'next_available_achievements' => [],
-            'current_badge' => '',
-            'next_badge' => '',
-            'remaing_to_unlock_next_badge' => 0
+            'unlocked_achievements' => $user->achievements()->pluck('description')->toArray(),
+            'next_available_achievements' => [
+                'comments' => $this->getNextAchievements($user, 'comment')->description,
+                'lessons' => $this->getNextAchievements($user, 'lesson')->description,
+            ],
+            'current_badge' => $user->badge->description,
+            'next_badge' => $next_badge->description ?? null,
+            'remaing_to_unlock_next_badge' => $next_badge->points - $user->achievements()->count()
         ]);
     }
 }
