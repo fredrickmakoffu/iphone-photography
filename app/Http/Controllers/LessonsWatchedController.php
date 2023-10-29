@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Comment\StoreRequest;
+use App\Http\Requests\Lesson\StoreRequest;
 use App\Services\Achievements\LogUserAchievementsService;
 use App\Services\Badges\SetUserBadgeService;
 use Illuminate\Http\JsonResponse;
+use App\Models\LessonsWatched;
 
-class CommentController extends Controller
+class LessonsWatchedController extends Controller
 {
-    const ACHIEVEMENT_TYPE = 'comment';
+    const ACHIEVEMENT_TYPE = 'lesson';
+    private LessonsWatched $lessonsWatched;
+
+    public function __construct()
+    {
+        $this->lessonsWatched = new LessonsWatched();
+    }
 
     public function store(StoreRequest $request, LogUserAchievementsService $logAchievement, SetUserBadgeService $setBadge): JsonResponse
     {
         // create comment
-        $comment = $request->user()->comments()->create($request->validated());
+        $comment = $this->lessonsWatched->create($request->validated());
 
         // create achievements if any 
         $logAchievement->execute(self::ACHIEVEMENT_TYPE);

@@ -23,7 +23,7 @@ class SetUserBadgeService
         if (!$badge) return false;
 
         // return if user has retrieved badge
-        if ($badge->id == $this->user->id) return true;
+        if ($badge->id == $this->user->badge_id) return true;
 
         // set badge
         return $this->setBadge($badge);

@@ -13,7 +13,7 @@ class LogUserAchievementProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(LogUserAchievementsService::class, function ($app) {
-            return new LogUserAchievementsService(request()->user(), 'comment');
+            return new LogUserAchievementsService(request()->user());
         });
     }
 

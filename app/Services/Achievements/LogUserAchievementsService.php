@@ -11,16 +11,17 @@ class LogUserAchievementsService
 {
     private Achievement $achievement;
     private UserAchievement $user_achievement;
-    public function __construct(private readonly User $user, private readonly string $achievement_type)
+
+    public function __construct(private readonly User $user)
     {
         $this->achievement = new Achievement();
         $this->user_achievement = new UserAchievement();
     }
 
-    public function execute(): bool
+    public function execute(string $achievement_type): bool
     {
         // check if user comments meet any achievements
-        $achievement = $this->checkIfAchievementExists();
+        $achievement = $this->checkIfAchievementExists($achievement_type);
 
         //  return if no achievement exists
         if (!$achievement) return false;
@@ -29,14 +30,14 @@ class LogUserAchievementsService
         return $this->setAchievement($achievement);
     }
 
-    protected function checkIfAchievementExists(): ?object
+    protected function checkIfAchievementExists(string $achievement_type): ?object
     {
         // get no. user comments
-        $no_comments = $this->user->comments()->count();
+        $achievement_count = $this->countAchievementByType($achievement_type);
 
         // check if achievement exists for the number of comments
-        return $this->achievement->where('type', $this->achievement_type)
-            ->where('points', $no_comments)
+        return $this->achievement->where('type', $achievement_type)
+            ->where('points', $achievement_count)
             ->first();
     }
 
@@ -54,5 +55,22 @@ class LogUserAchievementsService
         }
 
         return true;
+    }
+
+    protected function countAchievementByType(string $achievement_type)
+    {
+        switch ($achievement_type) {
+            case 'comment':
+                return $this->user->comments()->count();
+                break;
+
+            case 'lesson':
+                return $this->user->lessons()->count();
+                break;
+
+            default:
+                return 0;
+                break;
+        }
     }
 }
