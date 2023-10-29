@@ -21,7 +21,7 @@ class AchievementsController extends Controller
                 'comments' => $this->getNextAchievements($user, 'comment')->description,
                 'lessons' => $this->getNextAchievements($user, 'lesson')->description,
             ],
-            'current_badge' => $user->badge->description,
+            'current_badge' => $user->badge->description ?? $next_badge->description ?? null, // if user has no badge, next badge will be the beginner badge
             'next_badge' => $next_badge->description ?? null,
             'remaing_to_unlock_next_badge' => $next_badge->points - $user->achievements()->count()
         ]);

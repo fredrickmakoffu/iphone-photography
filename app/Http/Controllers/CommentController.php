@@ -16,7 +16,9 @@ class CommentController extends Controller
     public function store(StoreRequest $request): JsonResponse
     {
         // create comment
-        $comment = $request->user()->comments()->create(array_merge($request->validated()));
+        $comment = $request->user()->comments()->create(array_merge($request->validated(), [
+            'user_id' => $request->user()->id
+        ]));
 
         // dispatch AchievementUnlocked event
         AchievementUnlocked::dispatch($request->user(), self::ACHIEVEMENT_TYPE);
