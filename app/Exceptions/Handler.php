@@ -3,7 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use Exception;
+use Illuminate\Database\QueryException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -23,8 +25,19 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (Exception $exception, $request) {
+            if ($request->is('api/*')) {
+                if ($exception instanceof QueryException) {
+                    return response()->json([
+                        'message' => 'Record not saved! Please reach out to support.',
+                        'error' => $exception->getMessage()
+                    ], 500);
+                } elseif ($exception instanceof HttpException) {
+                    return response()->json([
+                        'message' => $exception->getMessage(),
+                    ], $exception->getStatusCode());
+                }
+            }
         });
     }
 }
