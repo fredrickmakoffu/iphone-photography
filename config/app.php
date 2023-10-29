@@ -168,6 +168,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\Achievement\LogUserAchievementProvider::class,
+        App\Providers\Badge\SetUserBadgeProvider::class,
     ])->toArray(),
 
     /*

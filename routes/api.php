@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +18,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// login route
+Route::post('/login', [App\Http\Controllers\LoginController::class, 'login']);
+
+// group comments APIs
+Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('comment', App\Http\Controllers\CommentController::class)->only(['store']);
+});
+
+Route::get('test', function () {
+    return User::find(1)->achievements()->count();
 });
