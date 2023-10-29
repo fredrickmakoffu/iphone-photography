@@ -24,8 +24,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'watched' => 'required|boolean',
-            'user_id' => 'required|exists:users,id'
+            'watched' => 'required|boolean'
         ];
     }
 }

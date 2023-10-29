@@ -7,9 +7,11 @@ use Illuminate\Http\JsonResponse;
 use App\Models\LessonsWatched;
 use App\Events\AchievementUnlocked;
 use App\Events\BadgeUnlocked;
+use App\Traits\Helpers\ApiResponse;
 
 class LessonsWatchedController extends Controller
 {
+    use ApiResponse;
     const ACHIEVEMENT_TYPE = 'lesson';
     private LessonsWatched $lessonsWatched;
 
@@ -21,7 +23,7 @@ class LessonsWatchedController extends Controller
     public function store(StoreRequest $request): JsonResponse
     {
         // create comment
-        $lesson = $this->lessonsWatched->create($request->validated());
+        $lesson = $this->lessonsWatched->create(array_merge($request->validated(), ['user_id' => $request->user()->id]));
 
         // dispatch AchievementUnlocked event
         AchievementUnlocked::dispatch($request->user(), self::ACHIEVEMENT_TYPE);
@@ -30,6 +32,6 @@ class LessonsWatchedController extends Controller
         BadgeUnlocked::dispatch($request->user());
 
         // return response
-        return response()->json($lesson, 201);
+        return $this->success($lesson);
     }
 }
