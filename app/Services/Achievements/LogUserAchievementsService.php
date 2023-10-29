@@ -21,19 +21,19 @@ class LogUserAchievementsService
     public function execute(string $achievement_type): bool
     {
         // check if user comments meet any achievements
-        $achievement = $this->checkIfAchievementExists($achievement_type);
+        $achievement = $this->checkIfAchievementExists($achievement_type, $this->user);
 
         //  return if no achievement exists
         if (!$achievement) return false;
 
         //  set achievement
-        return $this->setAchievement($achievement);
+        return $this->setAchievement($achievement, $this->user);
     }
 
-    protected function checkIfAchievementExists(string $achievement_type): ?object
+    public function checkIfAchievementExists(string $achievement_type, User $user): ?object
     {
         // get no. user comments
-        $achievement_count = $this->countAchievementByType($achievement_type);
+        $achievement_count = $this->countAchievementByType($achievement_type, $user);
 
         // check if achievement exists for the number of comments
         return $this->achievement->where('type', $achievement_type)
@@ -41,11 +41,11 @@ class LogUserAchievementsService
             ->first();
     }
 
-    protected function setAchievement(Achievement $achievement): bool
+    public function setAchievement(Achievement $achievement, User $user): bool
     {
         try {
             $this->user_achievement = $this->user_achievement->create([
-                'user_id' => $this->user->id,
+                'user_id' => $user->id,
                 'achievement_id' => $achievement->id,
             ]);
         } catch (\Exception $e) {
@@ -57,15 +57,15 @@ class LogUserAchievementsService
         return true;
     }
 
-    protected function countAchievementByType(string $achievement_type)
+    protected function countAchievementByType(string $achievement_type, User $user)
     {
         switch ($achievement_type) {
             case 'comment':
-                return $this->user->comments()->count();
+                return $user->comments()->count();
                 break;
 
             case 'lesson':
-                return $this->user->lessons()->count();
+                return $user->lessons()->count();
                 break;
 
             default:

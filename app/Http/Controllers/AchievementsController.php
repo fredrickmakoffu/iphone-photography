@@ -18,8 +18,8 @@ class AchievementsController extends Controller
         return response()->json([
             'unlocked_achievements' => $user->achievements()->pluck('description')->toArray(),
             'next_available_achievements' => [
-                'comments' => $this->getNextAchievements($user, 'comment')->description,
-                'lessons' => $this->getNextAchievements($user, 'lesson')->description,
+                'comments' => $this->getNextAchievements($user, 'comment')->description ?? 'No more achievements to unlock',
+                'lessons' => $this->getNextAchievements($user, 'lesson')->description ?? 'No more achievements to unlock',
             ],
             'current_badge' => $user->badge->description ?? $next_badge->description ?? null, // if user has no badge, next badge will be the beginner badge
             'next_badge' => $next_badge->description ?? null,

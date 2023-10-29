@@ -23,7 +23,7 @@ class AchievementUnlockedTest extends TestCase
 
         // create comment with POST
         $this->post('/api/comment', [
-            'body' => 'This is a commentzs'
+            'body' => 'This is a comments'
         ], [
             'Authorization' => "Bearer $token",
         ]);
