@@ -17,7 +17,7 @@ class SetUserBadgeService
     public function execute(): bool
     {
         // get badge
-        $badge = $this->getBadgeFromUserAchievements();
+        $badge = $this->getBadgeFromUserAchievements($this->user);
 
         if (!$badge) return false;
 
@@ -25,10 +25,10 @@ class SetUserBadgeService
         if ($badge->id == $this->user->badge_id) return true;
 
         // set badge
-        return $this->setBadge($badge);
+        return $this->setBadge($badge, $this->user);
     }
 
-    protected function getBadgeFromUserAchievements(): ?object
+    protected function getBadgeFromUserAchievements(User $user): ?object
     {
         // get user achievements
         $user_achievements = $this->user->achievements()->count();
@@ -40,10 +40,10 @@ class SetUserBadgeService
             ->first();
     }
 
-    protected function setBadge(Badge $badge): bool
+    public function setBadge(Badge $badge, User $user): bool
     {
         try {
-            $this->user->update([
+            $user->update([
                 'badge_id' => $badge->id,
             ]);
         } catch (\Exception $e) {

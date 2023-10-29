@@ -6,11 +6,9 @@ use App\Models\Achievement;
 use App\Services\Achievements\LogUserAchievementsService;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\UserAchievement;
 use App\Models\Comment;
-use Illuminate\Support\Facades\Log;
 
-class AchievementsUnlockUnitTest extends TestCase
+class AchievementsUnlockedUnitTest extends TestCase
 {
     // test checkIfAchievementExists function in LogUserAchievementsService
     public function test_checking_if_achievement_exists()
