@@ -18,10 +18,7 @@ class AchievementsUnlockUnitTest extends TestCase
         $user = User::factory()->create();
 
         // create a achievement, type comment
-        $achievement = Achievement::factory()->create([
-            'type' => 'comment',
-            'points' => 1,
-        ]);
+        $achievement = Achievement::where('type', 'comment')->first();
 
         // create single comment
         Comment::factory()->create(['user_id' => $user->id]);
@@ -37,8 +34,8 @@ class AchievementsUnlockUnitTest extends TestCase
     {
         $user = User::factory()->create();
 
-        // create an achievement
-        $achievement = Achievement::factory()->create();
+        // pick an achievement
+        $achievement = Achievement::find(1);
 
         // set achievement
         $user_achievement = (new LogUserAchievementsService($user))->setAchievement($achievement, $user);

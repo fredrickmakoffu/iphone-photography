@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Exception;
 use Illuminate\Database\QueryException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
@@ -29,13 +30,17 @@ class Handler extends ExceptionHandler
             if ($request->is('api/*')) {
                 if ($exception instanceof QueryException) {
                     return response()->json([
-                        'message' => 'Record not saved! Please reach out to support.',
+                        'message' => 'Error! Please reach out to support.',
                         'error' => $exception->getMessage()
                     ], 500);
                 } elseif ($exception instanceof HttpException) {
                     return response()->json([
                         'message' => $exception->getMessage(),
                     ], $exception->getStatusCode());
+                } elseif ($exception instanceof NotFoundHttpException) {
+                    return response()->json([
+                        'message' => 'Resource not found.'
+                    ], 404);
                 }
             }
         });

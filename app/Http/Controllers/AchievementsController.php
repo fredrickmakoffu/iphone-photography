@@ -21,9 +21,11 @@ class AchievementsController extends Controller
                 'comments' => $this->getNextAchievements($user, 'comment')->description ?? 'No more achievements to unlock',
                 'lessons' => $this->getNextAchievements($user, 'lesson')->description ?? 'No more achievements to unlock',
             ],
-            'current_badge' => $user->badge->description ?? $next_badge->description ?? null, // if user has no badge, next badge will be the beginner badge
-            'next_badge' => $next_badge->description ?? null,
-            'remaing_to_unlock_next_badge' => $next_badge->points - $user->achievements()->count()
+            'current_badge' => $user->badge->description, // if user has no badge, next badge will be the beginner badge
+            'next_badge' => $next_badge->description ?? "No more badges to unlock",
+            'remaing_to_unlock_next_badge' => isset($next_badge->points)
+                ? $next_badge->points - $user->achievements()->count()
+                : 0,
         ]);
     }
 }

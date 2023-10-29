@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Log;
 
 class AchievementUnlockedTest extends TestCase
 {
@@ -23,13 +23,15 @@ class AchievementUnlockedTest extends TestCase
 
         // create comment with POST
         $this->post('/api/comment', [
-            'body' => 'This is a comments'
+            'body' => 'This is a comment'
         ], [
             'Authorization' => "Bearer $token",
         ]);
 
         // We expect the user to have unlocked the "First Comment" achievement
         $unlocked_achievements = $this->get("/users/{$user->id}/achievements")->json('unlocked_achievements');
+
+        Log::info($unlocked_achievements);
 
         // if we don't have the "First Comment" achievement, the test fails
         $this->assertContains('First Comment Written', $unlocked_achievements);
