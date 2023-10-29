@@ -9,7 +9,7 @@ trait GetUserBadgesData
 {
     protected function getNextBadge(User $user): ?object
     {
-        return Badge::where('points', '>', $user->badge->points)->first();
+        return Badge::where('points', '>', $user->badge->points ?? 0)->first();
     }
 
     protected function getPointsToNextBadge(User $user, Badge $next_badge): int
