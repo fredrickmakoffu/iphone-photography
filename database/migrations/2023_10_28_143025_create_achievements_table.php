@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('points');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['type', 'description', 'points']);
         });
     }
 

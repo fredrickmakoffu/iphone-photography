@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('achievement_id')->constrained('achievements');
             $table->timestamps();
+
+            $table->unique(['user_id', 'achievement_id']);
         });
     }
 
