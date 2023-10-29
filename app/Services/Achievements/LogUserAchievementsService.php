@@ -1,10 +1,11 @@
-<?php 
+<?php
 
 namespace App\Services\Achievements;
 
 use App\Models\User;
 use App\Models\Achievement;
 use App\Models\UserAchievement;
+use Illuminate\Support\Facades\Log;
 
 class LogUserAchievementsService
 {
@@ -21,13 +22,11 @@ class LogUserAchievementsService
         // check if user comments meet any achievements
         $achievement = $this->checkIfAchievementExists();
 
-        // return if no achievement exists
-        if($achievement->count() == 0) return true;
+        //  return if no achievement exists
+        if (!$achievement) return false;
 
-        // set achievement
-        $this->setAchievement($achievement);
-
-        return true;
+        //  set achievement
+        return $this->setAchievement($achievement);
     }
 
     protected function checkIfAchievementExists(): ?object
@@ -38,26 +37,22 @@ class LogUserAchievementsService
         // check if achievement exists for the number of comments
         return $this->achievement->where('type', $this->achievement_type)
             ->where('points', $no_comments)
-            ->first() ?? (object) [];
+            ->first();
     }
 
-    protected function setAchievement(Achievement $achievement) : object
-    {   
-        try{
+    protected function setAchievement(Achievement $achievement): bool
+    {
+        try {
             $this->user_achievement = $this->user_achievement->create([
                 'user_id' => $this->user->id,
                 'achievement_id' => $achievement->id,
             ]);
         } catch (\Exception $e) {
-            return (object) [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
+            Log::info($e->getMessage()); // if logging errors to the data, we'd log the error here
+
+            return false;
         }
 
-        return (object) [
-            'success' => true,
-            'message' => 'Achievement set successfully',
-        ];
+        return true;
     }
 }

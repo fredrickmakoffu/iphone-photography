@@ -20,16 +20,16 @@ class SetUserBadgeService
         // get badge
         $badge = $this->getBadgeFromUserAchievements();
 
+        if (!$badge) return false;
+
         // return if user has retrieved badge
-        if($badge->id == $this->user->id) return true;
+        if ($badge->id == $this->user->id) return true;
 
         // set badge
-        $this->setBadge($badge);
-
-        return true;
+        return $this->setBadge($badge);
     }
 
-    protected function getBadgeFromUserAchievements() : ?object
+    protected function getBadgeFromUserAchievements(): ?object
     {
         // get user achievements
         $user_achievements = $this->user->achievements()->count();
@@ -40,22 +40,18 @@ class SetUserBadgeService
             ->first();
     }
 
-    protected function setBadge(Badge $badge) : object
-    {   
-        try{
+    protected function setBadge(Badge $badge): bool
+    {
+        try {
             $this->user->update([
                 'badge_id' => $badge->id,
             ]);
         } catch (\Exception $e) {
-            return (object) [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
+            Log::info($e->getMessage()); // if logging errors to the data, we'd log the error here
+
+            return false;
         }
 
-        return (object) [
-            'success' => true,
-            'message' => 'Badge set successfully',
-        ];
+        return true;
     }
 }
